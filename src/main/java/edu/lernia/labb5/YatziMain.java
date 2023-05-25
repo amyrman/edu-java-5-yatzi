@@ -3,57 +3,60 @@ package edu.lernia.labb5;
 import java.util.Scanner;
 
 public class YatziMain {
-    public static Die[] ds;
-    public static boolean bGameIsOn = true;
+    public static Die[] die;
+    public static boolean isGameOver = false;
 
     public static void main(String[] args) {
-        int iturn = 0;
-        ds = new Die[5];
-        for(int d=0;d<5;d++) {
-            ds[d] = new Die();
+        int round = 0;
+        die = new Die[5];
+        for (int d = 0; d < 5; d++) { // TODO: Reduce nesting
+            die[d] = new Die();
         }
-        //We will continue until the game is over
-        while(bGameIsOn == true) {
-            iturn = 0;
+        // We will continue until the game is over
+        while (isGameOver == false) {
+            round = 0;
             System.out.println("Welcome to Yatzi!");
-            while(iturn < 3) {
-                System.out.println("Starting turn " + (iturn+1) + " of 3, rolling dice.");
-                for(int i=0;i<ds.length;i++) {
-                    ds[i].DieRoll();
-                    //ds[i].value = 5; //Test if yatzi work
-                    System.out.println(i + ": " + ds[i].getString());
+            while (round < 3) {
+                System.out.println("Starting round " + (round + 1) + " of 3, rolling dice.");
+                for (int i = 0; i < die.length; i++) {
+                    die[i].DieRoll();
+                    // die[i].value = 5; //Test if yatzi work
+                    System.out.println(i + ": " + die[i].getString());
                 }
-                //YATZI
+                // YATZI
                 boolean flag = true;
-                for(int j=1;j<5;j++) {
-                    if(ds[j].value!=ds[j-1].value) {
-                        //Set flag to false
+                for (int j = 1; j < 5; j++) {
+                    if (die[j].value != die[j - 1].value) {
+                        // Set flag to false
                         flag = false;
                     }
                 }
-                if(flag == true) {
-                    System.out.println("You got YATZI! in " + ds[0].value + "'s");
+                if (flag == true) {
+                    System.out.println("Holy moly, you got ze YATZI! in " + die[0].value + "'s");
                     return;
                 } else {
-                    //Here we check if there is no Yatzy: then we check what turn we are on and asks the player if we want to continue or not
-                    if(iturn != 2) {
+                    // Here we check if there is no Yatzy: then we check what round we are on and
+                    // asks the player if we want to continue or not
+                    if (round != 2) {
                         System.out.println("Want to throw again? (y for yes, anything else for no)");
-                        Scanner sc = new Scanner(System.in);
-                        if(sc.next().equals("y")) {
-                            ++iturn;
+                        Scanner scanner = new Scanner(System.in);
+                        if (scanner.next().equals("y")) {
+                            ++round;
                         } else {
-                            bGameIsOn = !bGameIsOn;
+                            isGameOver = !isGameOver;
                             break;
                         }
+                        scanner.close();
                     } else {
                         System.out.println("Game over! Want to play again?");
-                        Scanner sc = new Scanner(System.in);
-                        if(sc.next().equals("y")) {
-                            iturn = 0;
+                        Scanner scanner = new Scanner(System.in);
+                        if (scanner.next().equals("y")) {
+                            round = 0;
                         } else {
-                            bGameIsOn = !bGameIsOn;
+                            isGameOver = !isGameOver;
                             break;
                         }
+                        scanner.close();
                     }
                 }
             }

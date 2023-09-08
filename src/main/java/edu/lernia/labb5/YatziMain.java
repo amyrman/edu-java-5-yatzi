@@ -2,18 +2,20 @@ package edu.lernia.labb5;
 
 import java.util.Scanner;
 
-public class YatziMain {
-    public static Die[] die;
-    public static boolean isGameOver = false;
+public class YatziMain { // separera logik till annan klass
+    // samling med tärningar --> bg material
+    
+    public static boolean isGameOn = true;
 
     public static void main(String[] args) {
         int round = 0;
+        
         die = new Die[5];
         for (int d = 0; d < 5; d++) { // TODO: Reduce nesting
             die[d] = new Die();
         }
         // We will continue until the game is over
-        while (isGameOver == false) {
+        while (isGameOn == true) {
             round = 0;
             System.out.println("Welcome to Yatzi!");
             while (round < 3) {
@@ -21,42 +23,40 @@ public class YatziMain {
                 for (int i = 0; i < die.length; i++) {
                     die[i].DieRoll();
                     // die[i].value = 5; //Test if yatzi work
-                    System.out.println(i + ": " + die[i].getString());
+                    System.out.println(i + ": " + die[i].getDiceValueAsString());
                 }
                 // YATZI
-                boolean flag = true;
+                boolean gotYatzi = true;
                 for (int j = 1; j < 5; j++) {
                     if (die[j].value != die[j - 1].value) {
-                        // Set flag to false
-                        flag = false;
+                        // Set yatzi to false
+                        gotYatzi = false;
                     }
                 }
-                if (flag == true) {
-                    System.out.println("Holy moly, you got ze YATZI! in " + die[0].value + "'s");
+                if (gotYatzi == true) {
+                    System.out.println("You got YATZI! in " + die[0].value + "'s");
                     return;
                 } else {
-                    // Here we check if there is no Yatzy: then we check what round we are on and
-                    // asks the player if we want to continue or not
+                    // Here we check if there is no Yatzy: then we check what round we are on and asks the player if we want to continue or not
                     if (round != 2) {
                         System.out.println("Want to throw again? (y for yes, anything else for no)");
                         Scanner scanner = new Scanner(System.in);
-                        if (scanner.next().equals("y")) {
+                        if(scanner.next().equals("y")) {
                             ++round;
                         } else {
-                            isGameOver = !isGameOver;
+                            isGameOn = !isGameOn;
                             break;
                         }
-                        scanner.close();
                     } else {
                         System.out.println("Game over! Want to play again?");
                         Scanner scanner = new Scanner(System.in);
                         if (scanner.next().equals("y")) {
                             round = 0;
                         } else {
-                            isGameOver = !isGameOver;
+                            isGameOn = !isGameOn;
                             break;
                         }
-                        scanner.close();
+                        // scanner.close();
                     }
                 }
             }

@@ -1,64 +1,39 @@
-/*
-Uppgiften går ut på att:
-
-- Få koden så läsbar som möjligt genom att refaktorera koden
-    - (dvs koden ska fungera på exakt samma sätt som den redan gör idag, men vara enkel att förstå och sätta sig in i för nya personer).
-
-- Ni ska också ha fyllt i testkod som testar:
-    - om det blir Yatzi om alla tärningar är lika
-    - att det inte är Yatzi när en tärning inte matchar (dessa tester finns påbörjade i YatziTest.java).
-    - Ni får gärna skriva fler test om det hjälper er med refaktoreringen, det är dock inget krav.
-    
-- Tips:​
-    - Bryt ut kod i mindre metoder, rensa bort sådant som inte används och se till att det inte finns duplicerad kod någonstans.
-    - Namnge även variabler, metoder och klasser utifrån vad de gör.
-
-- Från föreläsning:
-    - Plocka ut metoder och lägg dem i bg material
-    - Döp om klasser och metoder
-    - Lös upp nestade grejer så mycket som möjligt
-    
-*/
-
 package edu.lernia.labb5;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 
-import edu.lernia.labb5.Die;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 public class YatziTest {
-    
-    // @Test
-    // void whenAllDiceMatches_thenPrintYatziFeedbackAndAskIfUserWantsToPlayAgain() {
-    //     Die[] dice = new Die[5];
-    //     for(Die die: dice) {
-    //         die.value = 6;
-    //     }
-    //     //Assert something?
-    // }
 
-    // @Test
-    // void whenOneDieIsNotMatchingAnother_thenAskUserIfUserWantsToReroll() {
-    //     Die[] dice = new Die[5];
-    //     for(Die die: dice) {
-    //         die.value = 6;
-    //     }
-    //     dice[5].value = 1;
-    //     //Assert something?
-    // }
+    @Test
+    void whenAllDiceMatches_thenAssertThatUserGotYatzi() {
+        // Arrange: Create a YatziGame object and an array of Die objects with the same value
 
-    // @Test
-    // void whenNoYatziAfterThreeRounds_thenPrintNoYatziAndAskForAnotherGame() {
-    //     Die[] dice = new Die[5];
-    //     for(Die die: dice) {
-    //         die.value = 6;
-    //     }
-    //     dice[5].value = 1;
-    //     //Assert something?
-    // }
-}
+        YatziGame yatziGame = new YatziGame();
+
+        // Act: Set all dice values to 6
+        Die[] dice = new Die[5];
+        int yatziValue = 6;
+        for (int i = 0; i < dice.length; i++) {
+            dice[i] = new Die(yatziValue);
+        }
+
+        // Use reflection to access the private field die and set its value to the dice array
+        try {
+            Field dieField = YatziGame.class.getDeclaredField("die");
+            dieField.setAccessible(true);
+            dieField.set(yatziGame, dice);
+          } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+          }
+      
+          // Act: Call the userGotYatzi method
+          boolean result = yatziGame.userGotYatzi();
+      
+          // Assert: Check if the result is true
+          assertThat(result).isTrue();
+        }
+    }
